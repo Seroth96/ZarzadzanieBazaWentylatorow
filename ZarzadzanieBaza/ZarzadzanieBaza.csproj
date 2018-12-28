@@ -65,6 +65,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Chebyshev.cs" />
     <Compile Include="DBContext.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Helpers\ExcellReader.cs" />
