@@ -115,8 +115,7 @@ namespace ZarzadzanieBaza
                 Y[i, 0] = xlr.Dp[i];
             }
             List<double> U = Chebyshev.ConvertXToU(xlr.Q);
-            double[,] T = Chebyshev.CalculatePolynomials(U, 5);
-            double[,] invT = Chebyshev.InverseMatrix(T);
+            double[,] T = Chebyshev.CalculatePolynomials(U, 4);
             double[,] C = Chebyshev.ComputeVectorC(T, Y);
 
 

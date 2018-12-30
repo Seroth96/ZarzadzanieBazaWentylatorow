@@ -90,8 +90,9 @@ namespace ZarzadzanieBaza
             //C = (T'*T)*(T'*Y)
             //OLS
             var TtT = MultiplyMatrix(T.Transpose(), T);
+            double[,] invTtT = InverseMatrix(TtT);
             var TtY = MultiplyMatrix(T.Transpose(), Y);
-            var C = MultiplyMatrix(TtT, TtY);
+            var C = MultiplyMatrix(invTtT, TtY);
             //Possibly change to WLS with weights
 
             return C;
@@ -162,7 +163,7 @@ namespace ZarzadzanieBaza
 
         private static double[] EquationSolver(double[,] lum, double[] b)
         {
-            int n = lum.Length;
+            int n = lum.GetLength(0);
             double[] x = new double[n];
             b.CopyTo(x, 0);
 
@@ -196,7 +197,7 @@ namespace ZarzadzanieBaza
             int[] perm;
             int toggle = MatrixDecompose(A, out lum, out perm);
             double result = toggle;
-            for (int i = 0; i < lum.Length; ++i)
+            for (int i = 0; i < lum.GetLength(0); ++i)
                 result *= lum[i,i];
             return result;
         }
