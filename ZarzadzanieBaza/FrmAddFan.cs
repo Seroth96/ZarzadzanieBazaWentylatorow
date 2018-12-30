@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ZarzadzanieBaza.Helpers;
 using ZarzadzanieBaza.Model;
 
 namespace ZarzadzanieBaza
@@ -98,15 +99,26 @@ namespace ZarzadzanieBaza
 
         private void AddWentylatorToDB(Wentylator w)
         {
-            using (var context = new DBContext())
-            {
-                context.Wentylatory.Add(w);
-                context.SaveChanges();
-            }
-
+            //using (var context = new DBContext())
+            //{
+            //    context.Wentylatory.Add(w);
+            //    context.SaveChanges();
+            //}
+            ExcellReader xlr = new ExcellReader();
             //TODO: Czytanie Excela
+            xlr.getExcelFile(tbxExcelFilename.Text);
 
             //TODO: Tworzenie aproksymacji!
+            double[,] Y = new double[xlr.Dp.Count(), 1];
+            for (int i = 0; i < xlr.Dp.Count(); i++)
+            {
+                Y[i, 0] = xlr.Dp[i];
+            }
+            List<double> U = Chebyshev.ConvertXToU(xlr.Q);
+            double[,] T = Chebyshev.CalculatePolynomials(U, 5);
+            double[,] invT = Chebyshev.InverseMatrix(T);
+            double[,] C = Chebyshev.ComputeVectorC(T, Y);
+
 
             MessageBox.Show("Pomyślnie dodano wentylator do bazy! \n", "Sukces!", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }

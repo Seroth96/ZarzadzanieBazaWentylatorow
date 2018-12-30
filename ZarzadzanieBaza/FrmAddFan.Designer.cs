@@ -283,7 +283,6 @@
             this.Name = "FrmAddFan";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Dodawanie wentylatora";
-            this.TopMost = true;
             this.Load += new System.EventHandler(this.FrmAddFan_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

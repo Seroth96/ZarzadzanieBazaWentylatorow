@@ -65,7 +65,7 @@ namespace ZarzadzanieBaza
             foreach (var x in X)
             {
                 double a = X.First(), b = X.Last();
-                double u = (2 * x - a - b)/(b - a);
+                double u = ((2 * x) - a - b)/(b - a);
                 U.Add(u);
             }
             return U;
@@ -120,7 +120,185 @@ namespace ZarzadzanieBaza
             return C;
         }
 
+        public static double[,] InverseMatrix(double[,] A)
+        {
+            int n = A.GetLength(0);
+            double[,] invA = new double[n, n];
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    invA[i, j] = A[i, j];
+                }
+            }
 
+            double det = DetMatrix(A);
+            if (det == 0.0)
+            {
+                Console.WriteLine("No inverse");
+                return invA;
+            }
+
+            double[,] lum; // Combined lower & upper
+            int[] perm;
+            int toggle;
+            toggle = MatrixDecompose(A, out lum, out perm);
+
+            double[] b = new double[n];
+            //solve equation for each column of identity matrix LUx = Pb
+            for (int i = 0; i < n; ++i)
+            {
+                //determine the identity matrix column b
+                for (int j = 0; j < n; ++j)
+                    if (i == perm[j]) b[j] = 1.0;
+                    else b[j] = 0.0;
+                double[] x = EquationSolver(lum, b); //solve the equation
+                for (int j = 0; j < n; ++j)
+                    invA[j,i] = x[j]; //put column into inverse matrix A
+
+            }
+            return invA;
+        }
+
+        private static double[] EquationSolver(double[,] lum, double[] b)
+        {
+            int n = lum.Length;
+            double[] x = new double[n];
+            b.CopyTo(x, 0);
+
+            //Solving Ly = b
+            //note that y is temporary x
+            for (int i = 1; i < n; ++i)
+            {
+                double sum = x[i];
+                for (int j = 0; j < i; ++j)
+                    sum -= lum[i,j] * x[j];
+                x[i] = sum;
+            }
+
+            x[n - 1] /= lum[n - 1,n - 1]; 
+
+            //Solving Ux = y
+            for (int i = n - 2; i >= 0; --i)
+            {
+                double sum = x[i];
+                for (int j = i + 1; j < n; ++j)
+                    sum -= lum[i,j] * x[j];
+                x[i] = sum / lum[i,i];
+            }
+
+            return x;
+        }
+
+        public static double DetMatrix(double[,] A)
+        {
+            double[,] lum;
+            int[] perm;
+            int toggle = MatrixDecompose(A, out lum, out perm);
+            double result = toggle;
+            for (int i = 0; i < lum.Length; ++i)
+                result *= lum[i,i];
+            return result;
+        }
+
+        private static int MatrixDecompose(double[,] A, out double[,] lum, out int[] perm)
+        {
+            // Crout's LU decomposition for matrix determinant and inverse
+            // stores combined lower & upper in lum[][]
+            // stores row permuations into perm[]
+            // returns +1 or -1 according to even or odd number of row permutations
+            // lower gets dummy 1.0s on diagonal (0.0s above)
+            // upper gets lum values on diagonal (0.0s below)
+
+            int toggle = +1; // even (+1) or odd (-1) row permutatuions
+            int n = A.GetLength(0);
+
+            // make a copy of m[,] into result lum[,]
+            lum = new double[n,n];
+            for (int i = 0; i < n; ++i)
+                for (int j = 0; j < n; ++j)
+                    lum[i,j] = A[i,j];
+
+
+            // make perm[], to know where each row was moved
+            perm = new int[n];
+            for (int i = 0; i < n; ++i)
+                perm[i] = i;
+
+            for (int j = 0; j < n - 1; ++j) // process by column. note n-1 
+            {
+                double max = Math.Abs(lum[j,j]);
+                int piv = j;
+
+                for (int i = j + 1; i < n; ++i) // find pivot index
+                {
+                    double xij = Math.Abs(lum[i,j]);
+                    if (xij > max)
+                    {
+                        max = xij;
+                        piv = i;
+                    }
+                } // i
+
+                if (piv != j) // swap rows j, piv
+                {
+                    // Size of double.
+                    var doubleSize = sizeof(double);
+
+                    // Number of elements in a row.
+                    var numRowElements = lum.GetLength(1);
+
+                    // Temporary array for an intermediate step in the swap operation.
+                    var temp = new double[numRowElements];
+
+                    // Copy piv row into a temporary array.
+                    Buffer.BlockCopy(lum, 
+                        piv * numRowElements * doubleSize,
+                        temp, 
+                        0,
+                        numRowElements * doubleSize);
+
+                    // Copy j row into the piv row.
+                    Buffer.BlockCopy(lum, 
+                        j * numRowElements * doubleSize,
+                        lum,
+                        piv * numRowElements * doubleSize, 
+                        numRowElements * doubleSize);
+
+                    // Copy temporary array into the j row.
+                    Buffer.BlockCopy(temp,
+                        0, 
+                        lum, 
+                        j * numRowElements * doubleSize, 
+                        numRowElements * doubleSize);
+                    
+                    int t = perm[piv]; // swap perm elements
+                    perm[piv] = perm[j];
+                    perm[j] = t;
+
+                    toggle = -toggle;
+                }
+
+                double xjj = lum[j,j];
+                if (xjj != 0.0)
+                {
+                    for (int i = j + 1; i < n; ++i)
+                    {
+                        //calculate L with 1.0s on diagonal
+                        //by dividing column by diagonal
+                        double xij = lum[i,j] / xjj;
+                        lum[i,j] = xij; 
+                        //from every element on right of that column in that row
+                        //i substract the multiplication of xij and corresponding element on j row
+                        for (int k = j + 1; k < n; ++k)
+                            lum[i,k] -= xij * lum[j,k];
+                    }
+                }
+
+            } // j
+
+            return toggle;
+        }
 
         //public static List<double> WeightMatrixW(List<double> X)
         //{
