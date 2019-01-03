@@ -13,6 +13,7 @@ namespace ZarzadzanieBaza
     {
         public DbSet<Wentylator> Wentylatory { get; set; }
         public DbSet<Nature> Natures { get; set; }
+        public DbSet<Coefficient> Coefficients { get; set; }
 
         public DBContext() : base(nameOrConnectionString: "BazaWentylatorow") { }
 

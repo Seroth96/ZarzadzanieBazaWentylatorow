@@ -13,15 +13,19 @@ namespace ZarzadzanieBaza.Model
     {
         [Key]
         public int ID { get; set; }
+
         [Index(IsUnique = true)]
         public string Name { get; set; }
         public double Power { get; set; }
-        public double Pressure { get; set; }
+        public double AirMassFlowFrom { get; set; }
+        public double AirMAssFlowTo { get; set; }
+        //public double Pressure { get; set; }
         public double Revolution { get; set; }
 
-        [ForeignKey("Nature")]
-        public int NatureId { get; set; }
-        public Nature Nature { get; set; }
+        public virtual int NatureId { get; set; }
+        public virtual Nature Nature { get; set; }
+
+        public virtual ICollection<Coefficient> Coefficients { get; set; }
 
         public override string ToString()
         {

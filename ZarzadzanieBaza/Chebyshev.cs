@@ -59,6 +59,20 @@ namespace ZarzadzanieBaza
             //return tn;
         }
 
+        public static double EvaluateFunctionFromCoefficients(double[] C, double u)
+        {
+            double sum = 0;
+            for (uint i = 0; i < C.Count(); i++)
+            {
+                sum += C[i]*Tn(i, u);
+            }
+            return sum;
+        }
+        public static double Normalize(double a, double b, double x)
+        {
+            return ((2 * x) - a - b) / (b - a);
+        }
+
         public static List<double> ConvertXToU(List<double> X)
         {
             List<double> U = new List<double>();

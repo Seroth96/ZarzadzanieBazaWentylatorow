@@ -7,17 +7,16 @@ using System.Threading.Tasks;
 
 namespace ZarzadzanieBaza.Model
 {
-    public class Nature
+    public class Coefficient
     {
         [Key]
         public int ID { get; set; }
 
-        public string Name { get; set; }
-        public virtual ICollection<Wentylator> Wentylatory { get; set; }
+        public int Level { get; set; }
 
-        public override string ToString()
-        {
-            return Name;
-        }
+        public double Value { get; set; }
+        public bool IsArchived { get; set; } = false;
+
+        public Wentylator Wentylator { get; set; }
     }
 }

@@ -44,13 +44,13 @@
             this.label6 = new System.Windows.Forms.Label();
             this.tbxRevolutionTo = new System.Windows.Forms.TextBox();
             this.tbxRevolutionFrom = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.tbxPressureTo = new System.Windows.Forms.TextBox();
             this.tbxPressureFrom = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.cbxNature = new System.Windows.Forms.ComboBox();
             this.btnClear = new System.Windows.Forms.Button();
             this.bgwBrowser = new System.ComponentModel.BackgroundWorker();
+            this.tbxAirMassFlow = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
             btnSearch = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.flowLayoutPanel1.SuspendLayout();
@@ -62,7 +62,7 @@
             btnSearch.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             btnSearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             btnSearch.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            btnSearch.Location = new System.Drawing.Point(73, 262);
+            btnSearch.Location = new System.Drawing.Point(73, 303);
             btnSearch.Name = "btnSearch";
             btnSearch.Size = new System.Drawing.Size(102, 32);
             btnSearch.TabIndex = 1;
@@ -96,17 +96,17 @@
             // tbxName
             // 
             this.tbxName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.tbxName.Location = new System.Drawing.Point(91, 72);
+            this.tbxName.Location = new System.Drawing.Point(108, 72);
             this.tbxName.Name = "tbxName";
-            this.tbxName.Size = new System.Drawing.Size(224, 26);
+            this.tbxName.Size = new System.Drawing.Size(194, 26);
             this.tbxName.TabIndex = 3;
             // 
             // tbxPowerFrom
             // 
             this.tbxPowerFrom.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.tbxPowerFrom.Location = new System.Drawing.Point(91, 104);
+            this.tbxPowerFrom.Location = new System.Drawing.Point(108, 104);
             this.tbxPowerFrom.Name = "tbxPowerFrom";
-            this.tbxPowerFrom.Size = new System.Drawing.Size(102, 26);
+            this.tbxPowerFrom.Size = new System.Drawing.Size(85, 26);
             this.tbxPowerFrom.TabIndex = 5;
             this.tbxPowerFrom.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.numericTextBox_KeyPress);
             // 
@@ -134,7 +134,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label4.Location = new System.Drawing.Point(12, 169);
+            this.label4.Location = new System.Drawing.Point(12, 205);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(77, 20);
             this.label4.TabIndex = 8;
@@ -179,7 +179,7 @@
             this.tbxPowerTo.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.tbxPowerTo.Location = new System.Drawing.Point(212, 104);
             this.tbxPowerTo.Name = "tbxPowerTo";
-            this.tbxPowerTo.Size = new System.Drawing.Size(103, 26);
+            this.tbxPowerTo.Size = new System.Drawing.Size(90, 26);
             this.tbxPowerTo.TabIndex = 12;
             this.tbxPowerTo.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.numericTextBox_KeyPress);
             // 
@@ -208,44 +208,25 @@
             this.tbxRevolutionTo.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.tbxRevolutionTo.Location = new System.Drawing.Point(212, 137);
             this.tbxRevolutionTo.Name = "tbxRevolutionTo";
-            this.tbxRevolutionTo.Size = new System.Drawing.Size(103, 26);
+            this.tbxRevolutionTo.Size = new System.Drawing.Size(90, 26);
             this.tbxRevolutionTo.TabIndex = 15;
             this.tbxRevolutionTo.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.numericTextBox_KeyPress);
             // 
             // tbxRevolutionFrom
             // 
             this.tbxRevolutionFrom.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.tbxRevolutionFrom.Location = new System.Drawing.Point(91, 137);
+            this.tbxRevolutionFrom.Location = new System.Drawing.Point(108, 137);
             this.tbxRevolutionFrom.Name = "tbxRevolutionFrom";
-            this.tbxRevolutionFrom.Size = new System.Drawing.Size(102, 26);
+            this.tbxRevolutionFrom.Size = new System.Drawing.Size(85, 26);
             this.tbxRevolutionFrom.TabIndex = 14;
             this.tbxRevolutionFrom.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.numericTextBox_KeyPress);
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label7.Location = new System.Drawing.Point(196, 172);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(14, 20);
-            this.label7.TabIndex = 19;
-            this.label7.Text = "-";
-            // 
-            // tbxPressureTo
-            // 
-            this.tbxPressureTo.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.tbxPressureTo.Location = new System.Drawing.Point(212, 169);
-            this.tbxPressureTo.Name = "tbxPressureTo";
-            this.tbxPressureTo.Size = new System.Drawing.Size(103, 26);
-            this.tbxPressureTo.TabIndex = 18;
-            this.tbxPressureTo.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.numericTextBox_KeyPress);
             // 
             // tbxPressureFrom
             // 
             this.tbxPressureFrom.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.tbxPressureFrom.Location = new System.Drawing.Point(91, 169);
+            this.tbxPressureFrom.Location = new System.Drawing.Point(108, 205);
             this.tbxPressureFrom.Name = "tbxPressureFrom";
-            this.tbxPressureFrom.Size = new System.Drawing.Size(102, 26);
+            this.tbxPressureFrom.Size = new System.Drawing.Size(194, 26);
             this.tbxPressureFrom.TabIndex = 17;
             this.tbxPressureFrom.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.numericTextBox_KeyPress);
             // 
@@ -253,7 +234,7 @@
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label8.Location = new System.Drawing.Point(12, 201);
+            this.label8.Location = new System.Drawing.Point(12, 242);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(38, 20);
             this.label8.TabIndex = 20;
@@ -262,10 +243,9 @@
             // cbxNature
             // 
             this.cbxNature.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.cbxNature.FormattingEnabled = true;
-            this.cbxNature.Location = new System.Drawing.Point(91, 201);
+            this.cbxNature.Location = new System.Drawing.Point(108, 242);
             this.cbxNature.Name = "cbxNature";
-            this.cbxNature.Size = new System.Drawing.Size(224, 28);
+            this.cbxNature.Size = new System.Drawing.Size(194, 28);
             this.cbxNature.TabIndex = 21;
             // 
             // btnClear
@@ -274,7 +254,7 @@
             this.btnClear.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnClear.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.btnClear.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.btnClear.Location = new System.Drawing.Point(212, 262);
+            this.btnClear.Location = new System.Drawing.Point(212, 303);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(103, 32);
             this.btnClear.TabIndex = 22;
@@ -287,16 +267,35 @@
             this.bgwBrowser.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwBrowser_DoWork);
             this.bgwBrowser.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgwBrowser_RunWorkerCompleted);
             // 
+            // tbxAirMassFlow
+            // 
+            this.tbxAirMassFlow.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.tbxAirMassFlow.Location = new System.Drawing.Point(108, 170);
+            this.tbxAirMassFlow.Name = "tbxAirMassFlow";
+            this.tbxAirMassFlow.Size = new System.Drawing.Size(194, 26);
+            this.tbxAirMassFlow.TabIndex = 24;
+            this.tbxAirMassFlow.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.numericTextBox_KeyPress);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.label7.Location = new System.Drawing.Point(12, 170);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(90, 20);
+            this.label7.TabIndex = 23;
+            this.label7.Text = "Wydajność:";
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1458, 737);
+            this.Controls.Add(this.tbxAirMassFlow);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.btnClear);
             this.Controls.Add(this.cbxNature);
             this.Controls.Add(this.label8);
-            this.Controls.Add(this.label7);
-            this.Controls.Add(this.tbxPressureTo);
             this.Controls.Add(this.tbxPressureFrom);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.tbxRevolutionTo);
@@ -340,13 +339,13 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox tbxRevolutionTo;
         private System.Windows.Forms.TextBox tbxRevolutionFrom;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox tbxPressureTo;
         private System.Windows.Forms.TextBox tbxPressureFrom;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ComboBox cbxNature;
         private System.Windows.Forms.Button btnClear;
         private System.ComponentModel.BackgroundWorker bgwBrowser;
+        private System.Windows.Forms.TextBox tbxAirMassFlow;
+        private System.Windows.Forms.Label label7;
     }
 }
 

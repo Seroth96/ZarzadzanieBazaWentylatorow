@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Data.Entity;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -37,7 +38,7 @@ namespace ZarzadzanieBaza
             tbxPowerFrom.Clear();
             tbxPowerTo.Clear();
             tbxPressureFrom.Clear();
-            tbxPressureTo.Clear();
+            //tbxPressureTo.Clear();
             tbxRevolutionFrom.Clear();
             tbxRevolutionTo.Clear();
         }
@@ -62,72 +63,106 @@ namespace ZarzadzanieBaza
 
         private void bgwBrowser_DoWork(object sender, DoWorkEventArgs e)
         {
-            IQueryable<Wentylator> wentylatory;
+            string Name = String.Empty;
+            tbxName.Invoke(new MethodInvoker(delegate { Name = tbxName.Text; }));
+            string PowerFrom = String.Empty;
+            tbxName.Invoke(new MethodInvoker(delegate { PowerFrom = tbxPowerFrom.Text; }));
+            string PowerTo = String.Empty;
+            tbxName.Invoke(new MethodInvoker(delegate { PowerTo = tbxPowerTo.Text; }));
+            string PressureFrom = String.Empty;
+            tbxName.Invoke(new MethodInvoker(delegate { PressureFrom = tbxPressureFrom.Text; }));
+            string AirMassFlow = String.Empty;
+            tbxName.Invoke(new MethodInvoker(delegate { AirMassFlow = tbxAirMassFlow.Text; }));
+            string RevolutionFrom = String.Empty;
+            tbxName.Invoke(new MethodInvoker(delegate { RevolutionFrom = tbxRevolutionFrom.Text; }));
+            string RevolutionTo = String.Empty;
+            tbxName.Invoke(new MethodInvoker(delegate { RevolutionTo = tbxRevolutionTo.Text; }));
+            string Nature = String.Empty;
+            tbxName.Invoke(new MethodInvoker(delegate { Nature = cbxNature.Text; }));
+            List<Wentylator> wentylatory;
             using (var context = new DBContext())
             {
-                wentylatory = context.Wentylatory.AsQueryable();
+                wentylatory = context.Wentylatory.Include(b => b.Nature).Include(b => b.Coefficients).Select(w => w).ToList();
 
-                if (tbxName.Text != String.Empty)
+                if (Name != String.Empty)
                 {
-                    wentylatory = wentylatory.Where(w => w.Name.Equals(tbxName.Text)).AsQueryable();
+                    wentylatory = wentylatory.Where(w => w.Name.Equals(Name)).ToList();
                 }
 
-                if (tbxPowerFrom.Text != String.Empty)
+                if (PowerFrom != String.Empty)
                 {
-                    double power = double.Parse(tbxPowerFrom.Text);
-                    wentylatory = wentylatory.Where(w => w.Power >= power).AsQueryable();
+                    double power = double.Parse(PowerFrom);
+                    wentylatory = wentylatory.Where(w => w.Power >= power).ToList();
                 }
-                if (tbxPowerTo.Text != String.Empty)
+                if (PowerTo != String.Empty)
                 {
-                    double power = double.Parse(tbxPowerTo.Text);
-                    wentylatory = wentylatory.Where(w => w.Power <= power).AsQueryable();
-                }
-
-                if (tbxPressureFrom.Text != String.Empty)
-                {
-                    double pressure = double.Parse(tbxPressureFrom.Text);
-                    wentylatory = wentylatory.Where(w => w.Pressure >= pressure).AsQueryable();
-
-                }
-                if (tbxPressureTo.Text != String.Empty)
-                {
-                    double pressure = double.Parse(tbxPressureTo.Text);
-                    wentylatory = wentylatory.Where(w => w.Pressure <= pressure).AsQueryable();
+                    double power = double.Parse(PowerTo);
+                    wentylatory = wentylatory.Where(w => w.Power <= power).ToList();
                 }
 
-                if (tbxRevolutionFrom.Text != String.Empty)
+                if (PressureFrom != String.Empty && AirMassFlow != String.Empty)
                 {
-                    double revolution = double.Parse(tbxRevolutionTo.Text);
-                    wentylatory = wentylatory.Where(w => w.Revolution <= revolution).AsQueryable();
+                    double airMassFlow = double.Parse(AirMassFlow);
+                    double pressure = double.Parse(PressureFrom);
+                    wentylatory = wentylatory
+                        .Where(w =>                            
+                                 Chebyshev.EvaluateFunctionFromCoefficients(
+                                    w.Coefficients.OrderBy(c => c.Level).Select(v => v.Value).ToArray(),
+                                    Chebyshev.Normalize(w.AirMassFlowFrom, w.AirMAssFlowTo, airMassFlow))
+                                / pressure > 0.8  &&
+                                Chebyshev.EvaluateFunctionFromCoefficients(
+                                    w.Coefficients.OrderBy(c => c.Level).Select(v => v.Value).ToArray(),
+                                    Chebyshev.Normalize(w.AirMassFlowFrom, w.AirMAssFlowTo, airMassFlow))
+                                / pressure < 1.2
+                            ).ToList();
+                    //wentylatory = wentylatory.Where(w => w.Pressure >= pressure).AsQueryable();
                 }
-                if (tbxRevolutionTo.Text != String.Empty)
+               
+
+                if (RevolutionFrom != String.Empty)
                 {
-                    double revolution = double.Parse(tbxRevolutionTo.Text);
-                    wentylatory = wentylatory.Where(w => w.Revolution <= revolution).AsQueryable();
+                    double revolution = double.Parse(RevolutionFrom);
+                    wentylatory = wentylatory.Where(w => w.Revolution <= revolution).ToList();
+                }
+                if (RevolutionTo != String.Empty)
+                {
+                    double revolution = double.Parse(RevolutionTo);
+                    wentylatory = wentylatory.Where(w => w.Revolution <= revolution).ToList();
                 }
 
-                if (cbxNature.SelectedIndex != -1)
+                if (Nature != String.Empty)
                 {
-                    wentylatory = wentylatory.Where(w => w.Nature.Name.Equals(cbxNature.SelectedText)).AsQueryable();
+                    wentylatory = wentylatory.Where(w => w.Nature.Name.Equals(Nature)).ToList();
                 }
-            }
 
-            DataTable dt = wentylatory.Select(w => new
-            {
-                Nazwa = w.Name,
-                Moc = w.Power,
-                Ciśnienie = w.Pressure,
-                Obroty = w.Revolution,
-                Typ = w.Nature
-            }).ToList().ToDataTable();
+                DataTable dt = wentylatory.Select(w => new WentylatorDT
+                {
+                    Name = w.Name,
+                    Power = w.Power,
+                    //Ciśnienie = w.Pressure,
+                    Revolution = w.Revolution,
+                    Nature = w.Nature
+                }).ToList().ToDataTable();
 
-            dt.Locale = System.Globalization.CultureInfo.InvariantCulture;
-            dataGridView1.DataSource = dt;
-            dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCellsExceptHeader);
-            foreach (DataGridViewColumn column in dataGridView1.Columns)
-            {
-                column.SortMode = DataGridViewColumnSortMode.Automatic;
-            }
+                dt.Locale = System.Globalization.CultureInfo.InvariantCulture;
+
+                dataGridView1.Invoke(new MethodInvoker(delegate {
+                    dataGridView1.DataSource = dt;
+                    //dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.Fill);
+                    foreach (DataGridViewColumn column in dataGridView1.Columns)
+                    {
+                        column.SortMode = DataGridViewColumnSortMode.Automatic;
+                        column.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    }
+                    dataGridView1.Columns[dataGridView1.Columns.Count - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                    for (int i = 0; i < dataGridView1.Columns.Count; i++)
+                    {
+                        int colw = dataGridView1.Columns[i].Width;
+                        dataGridView1.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                        dataGridView1.Columns[i].Width = colw;
+                    }
+                }));
+            }  
         }
 
         private void bgwBrowser_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -139,6 +174,8 @@ namespace ZarzadzanieBaza
         private void FrmMain_Load(object sender, EventArgs e)
         {
             dataGridView1.MouseClick += new MouseEventHandler(dataGridView1_MouseClick);
+
+            FillTypesComboBox();
         }
 
         private void dataGridView1_MouseClick(object sender, MouseEventArgs e)
@@ -200,7 +237,7 @@ namespace ZarzadzanieBaza
                     {
                         Name = row.Cells["Nazwa"].Value.ToString(),
                         Power = double.Parse(row.Cells["Moc"].Value.ToString()),
-                        Pressure = double.Parse(row.Cells["Ciśnienie"].Value.ToString()),
+                        //Pressure = double.Parse(row.Cells["Ciśnienie"].Value.ToString()),
                         Revolution = double.Parse(row.Cells["Obroty"].Value.ToString()),
                         Nature = row.Cells["Typ"].Value as Nature
                     };
@@ -210,8 +247,11 @@ namespace ZarzadzanieBaza
                 case "Usuń":
                     using (var context = new DBContext())
                     {
-                        var toDelete = context.Wentylatory.First(
-                            we => we.Name.Equals(row.Cells["Nazwa"].Value.ToString()));
+                        string name = row.Cells["Nazwa"].Value.ToString();
+                        var toDelete = context.Wentylatory.Include(b => b.Coefficients).First(
+                            we => we.Name.Equals(name));
+
+                        context.Coefficients.RemoveRange(toDelete.Coefficients);
                         context.Wentylatory.Remove(toDelete);
                         context.SaveChanges();
                     }

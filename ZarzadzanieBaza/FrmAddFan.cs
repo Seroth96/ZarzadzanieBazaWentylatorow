@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.Entity;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,7 @@ namespace ZarzadzanieBaza
     public partial class FrmAddFan : Form
     {
         private Wentylator _wentylator;
+        private bool _excelExists = false;
         public FrmAddFan()
         {
             InitializeComponent();            
@@ -41,6 +43,7 @@ namespace ZarzadzanieBaza
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 tbxExcelFilename.Text = openFileDialog1.FileName;
+                _excelExists = true;
             }
         }
 
@@ -49,13 +52,12 @@ namespace ZarzadzanieBaza
             //weryfikacja poprawności danych
             //...
             double power = 0, revolution = 0, pressure = 0;
-            Nature nature;
+            int nature;
             try
             {
                 power = double.Parse(tbxPower.Text);
                 revolution = double.Parse(tbxRevolution.Text);
-                pressure = double.Parse(tbxPressure.Text);
-                nature = cbxNature.SelectedValue as Nature;
+                nature = (cbxNature.SelectedItem as Nature).ID;
             }
             catch (Exception ex)
             {
@@ -63,63 +65,101 @@ namespace ZarzadzanieBaza
                 return;
             }
 
-            Wentylator w = new Wentylator()
-            {
-                Name = tbxName.Text,
-                Power = power,
-                Revolution = revolution,
-                Pressure = pressure,
-                Nature = nature
-            };
+            
 
             if (_wentylator != null)
             {
-                EditWentylatorInDB(w);
+                EditWentylatorInDB(_wentylator);
             }
             else
             {
+                Wentylator w = new Wentylator()
+                {
+                    Name = tbxName.Text,
+                    Power = power,
+                    Revolution = revolution,
+                    //Pressure = pressure,
+                    NatureId = nature
+                };
                 AddWentylatorToDB(w);
             }        
 
             Close();
         }
         private void EditWentylatorInDB(Wentylator w)
-        {
+        {            
             using (var context = new DBContext())
             {
-                Wentylator newWentylator = context.Wentylatory.First(wentylator => wentylator.ID == w.ID);
+                Wentylator newWentylator = context.Wentylatory.Include(b => b.Nature).Include(c => c.Coefficients).First(wentylator => wentylator.ID == w.ID);
                 newWentylator.Name = w.Name;
                 newWentylator.Power = w.Power;
-                newWentylator.Pressure = w.Pressure;
                 newWentylator.Revolution = w.Revolution;
-                newWentylator.Nature = w.Nature;
+                newWentylator.NatureId = w.NatureId;
+
+                if (_excelExists)
+                {
+                    var oldCoefficients = context.Coefficients.Where(c => c.Wentylator.Name == newWentylator.Name);
+                    foreach (var coef in oldCoefficients)
+                    {
+                        coef.IsArchived = true;
+                    }
+                    double[,] C = GetCoefficientsFromExcel(ref newWentylator);
+                    for (int i = 0; i < C.GetLength(0); i++)
+                    {
+                        var coefficient = new Coefficient
+                        {
+                            Wentylator = newWentylator,
+                            Level = i,
+                            Value = C[i, 0]
+                        };
+                        context.Coefficients.Add(coefficient);
+                    }
+                }    
                 context.SaveChanges();
             }
         }
 
         private void AddWentylatorToDB(Wentylator w)
+        {     
+            using (var context = new DBContext())
+            {
+                context.Wentylatory.Add(w);
+
+                if (_excelExists)
+                {
+                    double[,] C = GetCoefficientsFromExcel(ref w);
+                    for(int i = 0; i < C.GetLength(0); i++)
+                    {
+                        var coefficient = new Coefficient
+                        {
+                            Wentylator = w,
+                            Level = i,
+                            Value = C[i, 0]
+                        };
+                        context.Coefficients.Add(coefficient);
+                    }
+                }                
+                context.SaveChanges();
+            }
+            MessageBox.Show("Pomyślnie dodano wentylator do bazy! \n", "Sukces!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private double[,] GetCoefficientsFromExcel(ref Wentylator w)
         {
-            //using (var context = new DBContext())
-            //{
-            //    context.Wentylatory.Add(w);
-            //    context.SaveChanges();
-            //}
             ExcellReader xlr = new ExcellReader();
-            //TODO: Czytanie Excela
             xlr.getExcelFile(tbxExcelFilename.Text);
 
-            //TODO: Tworzenie aproksymacji!
             double[,] Y = new double[xlr.Dp.Count(), 1];
             for (int i = 0; i < xlr.Dp.Count(); i++)
             {
                 Y[i, 0] = xlr.Dp[i];
             }
+            w.AirMassFlowFrom = xlr.Q.First();
+            w.AirMAssFlowTo = xlr.Q.Last();
             List<double> U = Chebyshev.ConvertXToU(xlr.Q);
             double[,] T = Chebyshev.CalculatePolynomials(U, 4);
             double[,] C = Chebyshev.ComputeVectorC(T, Y);
-
-
-            MessageBox.Show("Pomyślnie dodano wentylator do bazy! \n", "Sukces!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return C;
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -135,7 +175,7 @@ namespace ZarzadzanieBaza
             {
                 tbxName.Text = _wentylator.Name;
                 tbxPower.Text = _wentylator.Power.ToString();
-                tbxPressure.Text = _wentylator.Pressure.ToString();
+                //tbxPressure.Text = _wentylator.Pressure.ToString();
                 tbxRevolution.Text = _wentylator.Revolution.ToString();
                 cbxNature.SelectedIndex = cbxNature.Items.IndexOf(cbxNature.Items.Cast<Nature>().First(nature => nature.Name == _wentylator.Nature.Name));
             }

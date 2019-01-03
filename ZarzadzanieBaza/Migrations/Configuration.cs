@@ -4,6 +4,7 @@ namespace ZarzadzanieBaza.Migrations
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
+    using ZarzadzanieBaza.Model;
 
     internal sealed class Configuration : DbMigrationsConfiguration<ZarzadzanieBaza.DBContext>
     {
@@ -20,12 +21,16 @@ namespace ZarzadzanieBaza.Migrations
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
             //  to avoid creating duplicate seed data. E.g.
             //
-            //    context.People.AddOrUpdate(
-            //      p => p.FullName,
-            //      new Person { FullName = "Andrew Peters" },
-            //      new Person { FullName = "Brice Lambson" },
-            //      new Person { FullName = "Rowan Miller" }
-            //    );
+            context.Natures.AddOrUpdate(
+              p => p.Name,
+              new Nature { Name = "Promieniowe" },
+              new Nature { Name = "Przeciwwybuchowe" },
+              new Nature { Name = "Dachowe" },
+              new Nature { Name = "Z tworzyw sztucznych" },
+              new Nature { Name = "Specjalne" },
+              new Nature { Name = "Transportowe" },
+              new Nature { Name = "Do zabudowy" }
+            );
             //
         }
     }

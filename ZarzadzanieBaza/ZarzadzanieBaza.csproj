@@ -93,12 +93,34 @@
     <Compile Include="Migrations\201812272129163_AddUniqueIndex.Designer.cs">
       <DependentUpon>201812272129163_AddUniqueIndex.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201901031708386_Coefficients.cs" />
+    <Compile Include="Migrations\201901031708386_Coefficients.Designer.cs">
+      <DependentUpon>201901031708386_Coefficients.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201901031747150_lazyloading.cs" />
+    <Compile Include="Migrations\201901031747150_lazyloading.Designer.cs">
+      <DependentUpon>201901031747150_lazyloading.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201901031808333_NameIsKeyWentylator.cs" />
+    <Compile Include="Migrations\201901031808333_NameIsKeyWentylator.Designer.cs">
+      <DependentUpon>201901031808333_NameIsKeyWentylator.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201901032123233_NatureId.cs" />
+    <Compile Include="Migrations\201901032123233_NatureId.Designer.cs">
+      <DependentUpon>201901032123233_NatureId.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201901032226129_Final.cs" />
+    <Compile Include="Migrations\201901032226129_Final.Designer.cs">
+      <DependentUpon>201901032226129_Final.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Model\Coefficient.cs" />
     <Compile Include="Model\Nature.cs" />
     <Compile Include="Helpers\PDFParser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Model\Wentylator.cs" />
+    <Compile Include="WentylatorDT.cs" />
     <EmbeddedResource Include="FrmAddFan.resx">
       <DependentUpon>FrmAddFan.cs</DependentUpon>
     </EmbeddedResource>
@@ -113,6 +135,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201812272129163_AddUniqueIndex.resx">
       <DependentUpon>201812272129163_AddUniqueIndex.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201901031708386_Coefficients.resx">
+      <DependentUpon>201901031708386_Coefficients.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201901031747150_lazyloading.resx">
+      <DependentUpon>201901031747150_lazyloading.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201901031808333_NameIsKeyWentylator.resx">
+      <DependentUpon>201901031808333_NameIsKeyWentylator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201901032123233_NatureId.resx">
+      <DependentUpon>201901032123233_NatureId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201901032226129_Final.resx">
+      <DependentUpon>201901032226129_Final.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
